@@ -1,0 +1,44 @@
+version: '3.1'
+services:
+  multiple_datasource_service:
+    container_name: multiple_datasource_service
+    image: multiple_datasource_service
+    build: ./
+    ports:
+      - "8090:8090"
+    depends_on:
+      - postgresqldb
+      - mysqldb
+
+  postgresqldb:
+    image: postgres:13
+    container_name: postgrsdb_container
+    ports:
+      - "5438:5438"
+    restart: unless-stopped
+    volumes:
+      - /var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgrs_db_multiple_connection
+
+  mysqldb:
+    image: mysql:8
+    container_name: mysqldb_container
+    ports:
+      - "3307:3306"
+    restart: unless-stopped
+    volumes:
+      - /var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=mysql
+      - MYSQL_USER=mysql
+      - MYSQL_PASSWORD=mysql
+      - MYSQL_DATABASE=mysql_db_multiple_connection
+
+volumes:
+  postgres_data:
+    driver: local
+  mysql_data:
+    driver: local
